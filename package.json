@@ -1,0 +1,21 @@
+{
+  "name": "connection-manager-arduino-cloud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mirkokurt/connection-manager-arduino-cloud/issues"
+  },
+  "homepage": "https://github.com/mirkokurt/connection-manager-arduino-cloud#readme",
+  "dependencies": {
+    "arduino-iot-js": "^0.4.5",
+    "babel-polyfill": "^6.26.0",
+    "node-fetch": "^2.6.0",
+    "ws": "^7.1.0"
+  }
+}
