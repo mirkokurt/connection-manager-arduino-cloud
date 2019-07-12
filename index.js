@@ -13,7 +13,7 @@ const fs = require('fs').promises;
 const refreshToken = require("./refresh");
 const os = require('os');
 
-var initilized = false;
+var initialized = false;
 var ArduinoRestClient = new arduinCloudRestApi.ArduinoCloudClient();
 var storageApiClient = new storagetApi.StorageClient();
 const homeDir = os.homedir();
@@ -74,7 +74,7 @@ const init = async function(accessToken, refreshToken, tokenURL, clientID, clien
 	  ArduinoRestClient.updateToken(accessToken);	
 		storageApiClient.updateToken(accessToken);
 
-	  if(initilized) {
+	  if(initialized) {
 			await arduinCloudMessageApi.updateToken(accessToken);
 	  } else {
 			await arduinCloudMessageApi.connect(ArduinoCloudOptions);
