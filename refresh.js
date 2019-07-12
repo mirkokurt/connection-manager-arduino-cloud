@@ -71,7 +71,7 @@ TokenProvider.prototype.getToken = function () {
       form: {
         refresh_token: this.options.refresh_token,
         grant_type:    'refresh_token'
-      },
+      }, 
       headers: headers,
     }, function (err, response, body) {
       if(err) return reject(err);
