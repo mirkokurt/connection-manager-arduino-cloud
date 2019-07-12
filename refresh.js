@@ -1,7 +1,6 @@
 'use strict';
 
 var request = require('request');
-var EventEmitter = require('events').EventEmitter;
 
 /**
  * Create a new instance of TokenProvider
@@ -40,8 +39,7 @@ class TokenProvider {
  */
   getToken() {
     const p = new Promise((resolve, reject) => {
-      resolve({});
-/*      const headers = {
+      const headers = {
         'Authorization': 'Basic ' + new Buffer(this.options.client_id + ':' + this.options.client_secret).toString('base64'),
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -69,7 +67,6 @@ class TokenProvider {
         return resolve(JSON.parse(body));
 
       });
-*/
     });
     return p;
   };
