@@ -88,7 +88,7 @@ TokenProvider.prototype.getToken = () => {
 
       return resolve(JSON.parse(body));
 
-    });
+    }.bind(this));
   });
   return p;
 };

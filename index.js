@@ -41,7 +41,7 @@ const ArduinoCloudOptions = {
 			client_secret: pData.clientSecret
   	});
 
-		const newToken = tokenProvider.getToken();
+		const newToken = await tokenProvider.getToken();
 		pData.refreshToken = newToken.refresh_token;
 		await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(pData), 'utf8');
 		ArduinoRestClient.updateToken(newToken.access_token);
