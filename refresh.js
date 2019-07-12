@@ -59,37 +59,38 @@ TokenProvider.prototype = Object.create(EventEmitter.prototype);
  *
  * @param  {Function} done
  */
-TokenProvider.prototype.getToken = function (done) {
-  const headers = {
-    'Authorization': 'Basic ' + new Buffer(this.options.client_id + ':' + this.options.client_secret).toString('base64'),
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
-  request.post({
-    url: this.url,
-    form: {
-      refresh_token: this.options.refresh_token,
-      grant_type:    'refresh_token'
-    },
-    headers: headers,
-  }, function (err, response, body) {
-    if(err) return done(err);
-
-
-    if (response.statusCode !== 200) {
-      var error;
-      if (~response.headers['content-type'].indexOf('application/json')) {
-        var errorBody = JSON.parse(body);
-        error = new Error(errorBody.error);
-      } else {
-        error = new Error('error refreshing token');
-        error.response_body = body;
-      }
-      return done(error);
+TokenProvider.prototype.getToken = () => {
+  const p = new Promise((resolve, reject) => {
+    const headers = {
+      'Authorization': 'Basic ' + new Buffer(this.options.client_id + ':' + this.options.client_secret).toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
+    request.post({
+      url: this.url,
+      form: {
+        refresh_token: this.options.refresh_token,
+        grant_type:    'refresh_token'
+      },
+      headers: headers,
+    }, function (err, response, body) {
+      if(err) return reject(err);
+      if (response.statusCode !== 200) {
+        var error;
+        if (~response.headers['content-type'].indexOf('application/json')) {
+          var errorBody = JSON.parse(body);
+          error = new Error(errorBody.error);
+        } else {
+          error = new Error('error refreshing token');
+          error.response_body = body;
+        }
+        return reject(error);
+      }
 
-    return done(null, JSON.parse(body));
+      return resolve(JSON.parse(body));
 
-  }.bind(this));
+    });
+  });
+  return p;
 };
 
 module.exports = TokenProvider;
