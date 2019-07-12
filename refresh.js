@@ -40,7 +40,8 @@ class TokenProvider {
  */
   getToken() {
     const p = new Promise((resolve, reject) => {
-      const headers = {
+      resolve({});
+/*      const headers = {
         'Authorization': 'Basic ' + new Buffer(this.options.client_id + ':' + this.options.client_secret).toString('base64'),
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -68,9 +69,10 @@ class TokenProvider {
         return resolve(JSON.parse(body));
 
       });
-  });
-  return p;
-};
+*/
+    });
+    return p;
+  };
   
 }
 
