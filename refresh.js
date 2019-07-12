@@ -59,7 +59,7 @@ TokenProvider.prototype = Object.create(EventEmitter.prototype);
  *
  * @param  {Function} done
  */
-TokenProvider.prototype.getToken = () => {
+TokenProvider.prototype.getToken = function () {
   const p = new Promise((resolve, reject) => {
     const headers = {
       'Authorization': 'Basic ' + new Buffer(this.options.client_id + ':' + this.options.client_secret).toString('base64'),
@@ -88,10 +88,10 @@ TokenProvider.prototype.getToken = () => {
 
       return resolve(JSON.parse(body));
 
-    }.bind(this));
+    });
   });
   return p;
-};
+}.bind(this);
 
 module.exports = TokenProvider;
 
