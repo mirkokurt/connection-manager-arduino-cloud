@@ -61,6 +61,7 @@ TokenProvider.prototype = Object.create(EventEmitter.prototype);
  */
 TokenProvider.prototype.getToken = function () {
   const p = new Promise((resolve, reject) => {
+//----
     const headers = {
       'Authorization': 'Basic ' + new Buffer(this.options.client_id + ':' + this.options.client_secret).toString('base64'),
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -89,9 +90,11 @@ TokenProvider.prototype.getToken = function () {
       return resolve(JSON.parse(body));
 
     });
-  });
+
+//----    
+  }).bind(this);
   return p;
-}.bind(this);
+};
 
 module.exports = TokenProvider;
 
