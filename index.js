@@ -10,7 +10,7 @@ global["Headers"] = Headers;
 const WebSocket = require('ws');	
 global["WebSocket"] = WebSocket;
 const fs = require('fs').promises;
-const refreshToken = require("./refresh");
+const TokenProvider = require("./refresh");
 const os = require('os');
 
 var initialized = false;
@@ -35,7 +35,7 @@ const ArduinoCloudOptions = {
     const data = await fs.readFile(homeDir +'/.node-red/oauth.json', 'utf8');
 		const pData = JSON.parse(data);
 		
-		var tokenProvider = new refreshToken(pData.tokenURL, {
+		var tokenProvider = new TokenProvider(pData.tokenURL, {
 			refresh_token: pData.refreshToken, 
 			client_id:     pData.clientID, 
 			client_secret: pData.clientSecret
