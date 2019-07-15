@@ -41,12 +41,19 @@ const ArduinoCloudOptions = {
 			client_secret: pData.clientSecret
   	});
 
-		const newToken = await tokenProvider.getToken();
-		pData.refreshToken = newToken.refresh_token;
-		await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(pData), 'utf8');
-		ArduinoRestClient.updateToken(newToken.access_token);
-		ArduinoCloudOptions.token = newToken.access_token;
-		await arduinCloudMessageApi.connect(ArduinoCloudOptions);
+		tokenProvider.getToken(async function (err, response) {
+			if(err) {
+				throw err;
+			} else {
+				pData.refreshToken = response.refresh_token;
+				await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(pData), 'utf8');
+				ArduinoRestClient.updateToken(response.access_token);
+				ArduinoCloudOptions.token = response.access_token;
+				await arduinCloudMessageApi.connect(ArduinoCloudOptions);
+				initialized = true;
+			}
+		});
+
   } catch (err) {
     if (err.code !== 'ENOENT') {
       console.log("Loading oauth file: " + err);
