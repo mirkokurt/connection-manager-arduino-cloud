@@ -29,37 +29,45 @@ const ArduinoCloudOptions = {
   useCloudProtocolV2: true
 };
 
-(async () => {
+const load = function () {
 	console.log("exec load module");
-	try {
-    const data = await fs.readFile(homeDir +'/.node-red/oauth.json', 'utf8');
-		const pData = JSON.parse(data);
-		
-		var tokenProvider = new TokenProvider(pData.tokenURL, {
-			refresh_token: pData.refreshToken, 
-			client_id:     pData.clientID, 
-			client_secret: pData.clientSecret
-  	});
+	return new Promise(async (resolve, reject) => {
+		try {
+			const data = await fs.readFile(homeDir +'/.node-red/oauth.json', 'utf8');
+			const pData = JSON.parse(data);
+			
+			var tokenProvider = new TokenProvider(pData.tokenURL, {
+				refresh_token: pData.refreshToken, 
+				client_id:     pData.clientID, 
+				client_secret: pData.clientSecret
+			});
+	
+			response = await tokenProvider.getToken();
+			pData.refreshToken = response.refresh_token;
+			await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(pData), 'utf8');
+			ArduinoRestClient.updateToken(response.access_token);
+			ArduinoCloudOptions.token = response.access_token;
+			await arduinCloudMessageApi.connect(ArduinoCloudOptions);
+			initialized = true;
+			const initToken = {
+				accessToken: response.access_token,
+				refreshToken: pData.refreshToken,
+				tokenURL: pData.tokenURL,
+				clientID: pData.clientID,
+				clientSecret: pData.clientSecret
 
-		tokenProvider.getToken(async function (err, response) {
-			if(err) {
-				throw err;
-			} else {
-				pData.refreshToken = response.refresh_token;
-				await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(pData), 'utf8');
-				ArduinoRestClient.updateToken(response.access_token);
-				ArduinoCloudOptions.token = response.access_token;
-				await arduinCloudMessageApi.connect(ArduinoCloudOptions);
-				initialized = true;
 			}
-		});
+			resolve(initToken);
+		} catch (err) {
+			if (err.code !== 'ENOENT') {
+				console.log("Loading oauth file: " + err);
+			}
+			reject(err);
+		}
+	});
+};
 
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      console.log("Loading oauth file: " + err);
-    }
-  }
-})();
+//load();
 
 const init = async function(accessToken, refreshToken, tokenURL, clientID, clientSecret) {
 	ArduinoCloudOptions.token = accessToken;
@@ -93,3 +101,4 @@ exports.apiRest = ArduinoRestClient;
 exports.apiMessage = arduinCloudMessageApi;
 exports.apiStorage = storageApiClient;
 exports.init = init;
+exports.load = load;
