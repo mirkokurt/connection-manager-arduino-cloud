@@ -67,8 +67,6 @@ const load = function () {
 	});
 };
 
-//load();
-
 const init = async function(accessToken, refreshToken, tokenURL, clientID, clientSecret) {
 	ArduinoCloudOptions.token = accessToken;
 	try {

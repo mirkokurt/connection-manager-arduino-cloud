@@ -1,5 +1,5 @@
 {
-  "name": "connection-manager-arduino-cloud",
+  "name": "node-red-connection-manager-arduino-cloud",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,9 +9,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mirkokurt/connection-manager-arduino-cloud/issues"
+    "url": "https://github.com/mirkokurt/node-red-connection-manager-arduino-cloud/issues"
   },
-  "homepage": "https://github.com/mirkokurt/connection-manager-arduino-cloud#readme",
+  "homepage": "https://github.com/mirkokurt/node-red-connection-manager-arduino-cloud#readme",
   "dependencies": {
     "arduino-iot-js": "^0.4.5",
     "babel-polyfill": "^6.26.0",
