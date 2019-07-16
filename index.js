@@ -44,18 +44,14 @@ const load = function () {
 	
 			response = await tokenProvider.getToken();
 			pData.refreshToken = response.refresh_token;
-			await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(pData), 'utf8');
-			ArduinoRestClient.updateToken(response.access_token);
-			ArduinoCloudOptions.token = response.access_token;
-			await arduinCloudMessageApi.connect(ArduinoCloudOptions);
-			initialized = true;
+
 			const initToken = {
 				accessToken: response.access_token,
 				refreshToken: pData.refreshToken,
 				tokenURL: pData.tokenURL,
 				clientID: pData.clientID,
-				clientSecret: pData.clientSecret
-
+				clientSecret: pData.clientSecret,
+				expiresIn: response.expires_in
 			}
 			resolve(initToken);
 		} catch (err) {
@@ -67,7 +63,7 @@ const load = function () {
 	});
 };
 
-const init = async function(accessToken, refreshToken, tokenURL, clientID, clientSecret) {
+const init = async function(accessToken, refreshToken, tokenURL, clientID, clientSecret, expiresIn) {
 	ArduinoCloudOptions.token = accessToken;
 	try {
 		const accessData = {
@@ -79,13 +75,22 @@ const init = async function(accessToken, refreshToken, tokenURL, clientID, clien
 		await fs.writeFile(homeDir +'/.node-red/oauth.json', JSON.stringify(accessData), 'utf8');
 
 	  ArduinoRestClient.updateToken(accessToken);	
-		storageApiClient.updateToken(accessToken);
 
 	  if(initialized) {
 			await arduinCloudMessageApi.updateToken(accessToken);
 	  } else {
 			await arduinCloudMessageApi.connect(ArduinoCloudOptions);
 		}
+
+		setTimeout(async () => {
+			try {
+				const newToken = await this.load();
+				await this.init(newToken.accessToken, newToken.refreshToken, newToken.tokenURL, newToken.clientID, newToken.clientSecret, newToken.expiresIn);
+				console.log("New Token" + JSON.stringify(newToken));
+			} catch ( err ) {
+				console.log("Renewing token error:" + err);
+			}
+		}, (expiresIn - 60) * 1000);
 
 	  initialized = true;
 
