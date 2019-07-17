@@ -109,4 +109,6 @@ exports.apiMessage = arduinCloudMessageApi;
 exports.apiStorage = storageApiClient;
 exports.init = init;
 exports.load = load;
-exports.initialized = initialized;
+exports.isInitialized = () => {
+	return initialized;
+};
