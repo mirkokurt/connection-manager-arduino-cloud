@@ -26,7 +26,10 @@ const ArduinoCloudOptions = {
   port: 8443,
   ssl: true,             
   apiUrl: authApiUrl,
-  useCloudProtocolV2: true
+	useCloudProtocolV2: true,
+	onDisconnect: function () {
+		//TODO understand when the callback is called and implement the reconnection strategy
+	}
 };
 
 const load = function () {
@@ -57,8 +60,9 @@ const load = function () {
 		} catch (err) {
 			if (err.code !== 'ENOENT') {
 				console.log("Loading oauth file: " + err);
+				reject(err);
 			}
-			reject(err);
+			resolve();
 		}
 	});
 };
@@ -105,3 +109,4 @@ exports.apiMessage = arduinCloudMessageApi;
 exports.apiStorage = storageApiClient;
 exports.init = init;
 exports.load = load;
+exports.initialized = initialized;
