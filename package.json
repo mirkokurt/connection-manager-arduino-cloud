@@ -15,7 +15,7 @@
   "dependencies": {
     "arduino-iot-js": "^0.4.5",
     "babel-polyfill": "^6.26.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "refresh-token": "^1.0.0",
     "ws": "^7.1.0"
   }
